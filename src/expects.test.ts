@@ -215,4 +215,18 @@ describe('expects', () => {
       expect(() => expects(true).toBeFalsy()).toThrowError('Expected: false. Actual: true');
     });
   });
+
+  describe('toBeNull', () => {
+    it('expects null to be null', () => {
+      expects(null).toBeNull();
+    });
+
+    it('expects a number to not be null', () => {
+      expects(2).not.toBeNull();
+    });
+
+    it('expects to throw when a number is to be null', () => {
+      expect(() => expects(2).toBeNull()).toThrowError('Expected: null. Actual: 2');
+    });
+  });
 });

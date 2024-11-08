@@ -37,12 +37,16 @@ export class Expects<T> {
     this._toBe(undefined);
   };
 
+  toBeNull = (): void => {
+    this._toBe(null);
+  };
+
   private _invert = (): this => {
     this._evaluator.invert();
     return this;
   };
 
-  private _toBe = (expected: T | undefined): void => {
+  private _toBe = (expected: T | undefined | null): void => {
     this._valueToBe(this._value, expected);
   };
 
