@@ -17,6 +17,10 @@ export class Expects<T> {
     this._toBe(value);
   };
 
+  toBeFalsy = (): void => {
+    this._valueToBe(!!this._value, false);
+  };
+
   toBeTruthy = (): void => {
     this._valueToBe(!!this._value, true);
   };

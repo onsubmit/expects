@@ -177,8 +177,42 @@ describe('expects', () => {
       expects('').not.toBeTruthy();
     });
 
-    it('expects to throw when a falsey value is to be truthy', () => {
+    it('expects to throw when a falsy value is to be truthy', () => {
       expect(() => expects(false).toBeTruthy()).toThrowError('Expected: true. Actual: false');
+    });
+  });
+
+  describe('toBeFalsy', () => {
+    it('expects falsey values to be falsy', () => {
+      expects(null).toBeFalsy();
+      expects(undefined).toBeFalsy();
+      expects(false).toBeFalsy();
+      expects(NaN).toBeFalsy();
+      expects(0).toBeFalsy();
+      expects(-0).toBeFalsy();
+      expects(0n).toBeFalsy();
+      expects('').toBeFalsy();
+    });
+
+    it('expects truthy values to not be falsy', () => {
+      expects(true).not.toBeFalsy();
+      expects({}).not.toBeFalsy();
+      expects([]).not.toBeFalsy();
+      expects(1).not.toBeFalsy();
+      expects(42).not.toBeFalsy();
+      expects('0').not.toBeFalsy();
+      expects('false').not.toBeFalsy();
+      expects(new Date()).not.toBeFalsy();
+      expects(-42).not.toBeFalsy();
+      expects(12n).not.toBeFalsy();
+      expects(3.14).not.toBeFalsy();
+      expects(-3.14).not.toBeFalsy();
+      expects(Infinity).not.toBeFalsy();
+      expects(-Infinity).not.toBeFalsy();
+    });
+
+    it('expects to throw when a truthy value is to be falsy', () => {
+      expect(() => expects(true).toBeFalsy()).toThrowError('Expected: false. Actual: true');
     });
   });
 });
