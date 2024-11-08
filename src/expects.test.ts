@@ -147,4 +147,38 @@ describe('expects', () => {
       expect(() => expects(2).toBeUndefined()).toThrowError('Expected: undefined. Actual: 2');
     });
   });
+
+  describe('toBeTruthy', () => {
+    it('expects truthy values to be truthy', () => {
+      expects(true).toBeTruthy();
+      expects({}).toBeTruthy();
+      expects([]).toBeTruthy();
+      expects(1).toBeTruthy();
+      expects(42).toBeTruthy();
+      expects('0').toBeTruthy();
+      expects('false').toBeTruthy();
+      expects(new Date()).toBeTruthy();
+      expects(-42).toBeTruthy();
+      expects(12n).toBeTruthy();
+      expects(3.14).toBeTruthy();
+      expects(-3.14).toBeTruthy();
+      expects(Infinity).toBeTruthy();
+      expects(-Infinity).toBeTruthy();
+    });
+
+    it('expects falsey values to not be truthy', () => {
+      expects(null).not.toBeTruthy();
+      expects(undefined).not.toBeTruthy();
+      expects(false).not.toBeTruthy();
+      expects(NaN).not.toBeTruthy();
+      expects(0).not.toBeTruthy();
+      expects(-0).not.toBeTruthy();
+      expects(0n).not.toBeTruthy();
+      expects('').not.toBeTruthy();
+    });
+
+    it('expects to throw when a falsey value is to be truthy', () => {
+      expect(() => expects(false).toBeTruthy()).toThrowError('Expected: true. Actual: false');
+    });
+  });
 });
