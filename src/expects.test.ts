@@ -229,4 +229,18 @@ describe('expects', () => {
       expect(() => expects(2).toBeNull()).toThrowError('Expected: null. Actual: 2');
     });
   });
+
+  describe('toBeNaN', () => {
+    it('expects NaN to be NaN', () => {
+      expects(NaN).toBeNaN();
+    });
+
+    it('expects a number to not be NaN', () => {
+      expects(2).not.toBeNaN();
+    });
+
+    it('expects to throw when a number is to be NaN', () => {
+      expect(() => expects(2).toBeNaN()).toThrowError('Expected: NaN. Actual: 2');
+    });
+  });
 });

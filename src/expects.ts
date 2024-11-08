@@ -41,12 +41,16 @@ export class Expects<T> {
     this._toBe(null);
   };
 
+  toBeNaN = (): void => {
+    this._toBe(NaN);
+  };
+
   private _invert = (): this => {
     this._evaluator.invert();
     return this;
   };
 
-  private _toBe = (expected: T | undefined | null): void => {
+  private _toBe = (expected: any): void => {
     this._valueToBe(this._value, expected);
   };
 
