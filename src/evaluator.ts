@@ -9,5 +9,9 @@ export class Evaluator {
     this._inverted = !this._inverted;
   };
 
+  get inverted(): boolean {
+    return this._inverted;
+  }
+
   evaluate = (condition: boolean) => (this._inverted ? !condition : condition);
 }

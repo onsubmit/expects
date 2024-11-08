@@ -52,7 +52,7 @@ describe('expects', () => {
       expects(userRef).toBe(user);
     });
 
-    it('expects to throw when two object references to be the same', () => {
+    it('expects to throw when two object references are not the same', () => {
       const user1 = {
         name: 'Andy',
         age: 42,
@@ -113,6 +113,12 @@ describe('expects', () => {
       expects(2).not.toBe(3);
     });
 
+    it('expects to throw when undefined is to be defined', () => {
+      expect(() => expects(undefined).toBeDefined()).toThrowError(
+        'Expected: <not> undefined. Actual: undefined',
+      );
+    });
+
     it('expects inversion state when an error is thrown', () => {
       let caught = false;
       try {
@@ -125,6 +131,20 @@ describe('expects', () => {
       }
 
       expects(caught).toBe(true);
+    });
+  });
+
+  describe('toBeUndefined', () => {
+    it('expects undefined to be undefined', () => {
+      expects(undefined).toBeUndefined();
+    });
+
+    it('expects a number to not be undefined', () => {
+      expects(2).not.toBeUndefined();
+    });
+
+    it('expects to throw when a number is to be undefined', () => {
+      expect(() => expects(2).toBeUndefined()).toThrowError('Expected: undefined. Actual: 2');
     });
   });
 });

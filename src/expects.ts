@@ -25,6 +25,10 @@ export class Expects<T> {
     }
   };
 
+  toBeUndefined = (): void => {
+    this._toBe(undefined);
+  };
+
   private _invert = (): this => {
     this._evaluator.invert();
     return this;
@@ -33,7 +37,9 @@ export class Expects<T> {
   private _toBe = (value: T | undefined): void => {
     if (this._evaluator.evaluate(!Object.is(this._value, value))) {
       // TODO: improve error messages for non-primitives.
-      throw new Error(`Expected: ${value}. Actual: ${this._value}`);
+      throw new Error(
+        `Expected:${this._evaluator.inverted ? ' <not>' : ''} ${value}. Actual: ${this._value}`,
+      );
     }
   };
 }
