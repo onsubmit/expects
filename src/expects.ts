@@ -45,6 +45,10 @@ export class Expects<T> {
     this._toBe(NaN);
   };
 
+  toSatisfy = (fn: (value: T) => boolean) => {
+    this._valueToBe(fn(this._value), true);
+  };
+
   private _invert = (): this => {
     this._evaluator.invert();
     return this;

@@ -243,4 +243,16 @@ describe('expects', () => {
       expect(() => expects(2).toBeNaN()).toThrowError('Expected: NaN. Actual: 2');
     });
   });
+
+  describe('toSatisfy', () => {
+    const isOdd = (value: number) => value % 2 !== 0;
+
+    it('expects 3 to be odd', () => {
+      expects(3).toSatisfy(isOdd);
+    });
+
+    it('expects 4 to not be odd', () => {
+      expects(4).not.toSatisfy(isOdd);
+    });
+  });
 });
