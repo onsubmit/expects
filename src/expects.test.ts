@@ -7,7 +7,7 @@ describe('expects', () => {
     });
 
     it('expects to throw when two numbers are not the same', () => {
-      expect(() => expects(2).toBe(3)).toThrowError('Expected: 3. Actual: 2');
+      expects(() => expects(2).toBe(3)).toThrowError('Expected: 3. Actual: 2');
     });
 
     it('expects two numbers to not be the same', () => {
@@ -63,10 +63,10 @@ describe('expects', () => {
         age: 42,
       };
 
-      expect(() => expects(user1).toBe(user2)).toThrowError(
+      expects(() => expects(user1).toBe(user2)).toThrowError(
         'Expected: [object Object]. Actual: [object Object]',
       );
-      expect(() => expects(user2).toBe(user1)).toThrowError(
+      expects(() => expects(user2).toBe(user1)).toThrowError(
         'Expected: [object Object]. Actual: [object Object]',
       );
     });
@@ -114,7 +114,7 @@ describe('expects', () => {
     });
 
     it('expects to throw when undefined is to be defined', () => {
-      expect(() => expects(undefined).toBeDefined()).toThrowError(
+      expects(() => expects(undefined).toBeDefined()).toThrowError(
         'Expected: <not> undefined. Actual: undefined',
       );
     });
@@ -144,7 +144,7 @@ describe('expects', () => {
     });
 
     it('expects to throw when a number is to be undefined', () => {
-      expect(() => expects(2).toBeUndefined()).toThrowError('Expected: undefined. Actual: 2');
+      expects(() => expects(2).toBeUndefined()).toThrowError('Expected: undefined. Actual: 2');
     });
   });
 
@@ -178,7 +178,7 @@ describe('expects', () => {
     });
 
     it('expects to throw when a falsy value is to be truthy', () => {
-      expect(() => expects(false).toBeTruthy()).toThrowError('Expected: true. Actual: false');
+      expects(() => expects(false).toBeTruthy()).toThrowError('Expected: true. Actual: false');
     });
   });
 
@@ -212,7 +212,7 @@ describe('expects', () => {
     });
 
     it('expects to throw when a truthy value is to be falsy', () => {
-      expect(() => expects(true).toBeFalsy()).toThrowError('Expected: false. Actual: true');
+      expects(() => expects(true).toBeFalsy()).toThrowError('Expected: false. Actual: true');
     });
   });
 
@@ -226,7 +226,7 @@ describe('expects', () => {
     });
 
     it('expects to throw when a number is to be null', () => {
-      expect(() => expects(2).toBeNull()).toThrowError('Expected: null. Actual: 2');
+      expects(() => expects(2).toBeNull()).toThrowError('Expected: null. Actual: 2');
     });
   });
 
@@ -240,7 +240,7 @@ describe('expects', () => {
     });
 
     it('expects to throw when a number is to be NaN', () => {
-      expect(() => expects(2).toBeNaN()).toThrowError('Expected: NaN. Actual: 2');
+      expects(() => expects(2).toBeNaN()).toThrowError('Expected: NaN. Actual: 2');
     });
   });
 
@@ -253,6 +253,109 @@ describe('expects', () => {
 
     it('expects 4 to not be odd', () => {
       expects(4).not.toSatisfy(isOdd);
+    });
+  });
+
+  describe('toThrowError', () => {
+    const getFruitStock = (type: string | null | undefined) => {
+      if (type === undefined || type === null) {
+        throw type;
+      }
+
+      if (type === 'pineapples') {
+        throw new Error('Pineapples are not in stock');
+      }
+
+      if (type === 'oranges') {
+        throw 'Oranges are not in stock';
+      }
+
+      if (type === 'apples') {
+        return 300;
+      }
+    };
+
+    it('expects function to throw undefined', () => {
+      expects(() => getFruitStock(undefined)).toThrowError();
+      expects(() => getFruitStock(undefined)).toThrowError(/Thrown error was undefined/);
+      expects(() => getFruitStock(undefined)).toThrowError('Thrown error was undefined');
+      expects(() => getFruitStock(undefined)).toThrowError(/^Thrown error was undefined$/);
+      expects(() => getFruitStock(undefined)).toThrowError(
+        new RegExp('Thrown error was undefined'),
+      );
+      expects(() => getFruitStock(undefined)).toThrowError(new Error('Thrown error was undefined'));
+    });
+
+    it('expects function to throw null', () => {
+      expects(() => getFruitStock(null)).toThrowError();
+      expects(() => getFruitStock(null)).toThrowError(/Thrown error was null/);
+      expects(() => getFruitStock(null)).toThrowError('Thrown error was null');
+      expects(() => getFruitStock(null)).toThrowError(/^Thrown error was null$/);
+      expects(() => getFruitStock(null)).toThrowError(new RegExp('Thrown error was null'));
+      expects(() => getFruitStock(null)).toThrowError(new Error('Thrown error was null'));
+    });
+
+    it('expects function to throw an error', () => {
+      expects(() => getFruitStock('pineapples')).toThrowError();
+      expects(() => getFruitStock('pineapples')).toThrowError(/stock/);
+      expects(() => getFruitStock('pineapples')).toThrowError('stock');
+      expects(() => getFruitStock('pineapples')).toThrowError(/^Pineapples are not in stock$/);
+      expects(() => getFruitStock('pineapples')).toThrowError(
+        new RegExp('Pineapples are not in stock'),
+      );
+      expects(() => getFruitStock('pineapples')).toThrowError(
+        new Error('Pineapples are not in stock'),
+      );
+    });
+
+    it('expects function to throw a string', () => {
+      expects(() => getFruitStock('oranges')).toThrowError();
+      expects(() => getFruitStock('oranges')).toThrowError(/stock/);
+      expects(() => getFruitStock('oranges')).toThrowError('stock');
+      expects(() => getFruitStock('oranges')).toThrowError(/^Oranges are not in stock$/);
+      expects(() => getFruitStock('oranges')).toThrowError(new RegExp('Oranges are not in stock'));
+      expects(() => getFruitStock('oranges')).toThrowError(new Error('Oranges are not in stock'));
+    });
+
+    it('expects function to not throw an error', () => {
+      expects(() => getFruitStock('apples')).not.toThrowError();
+      expects(() => getFruitStock('pineapples')).not.toThrowError(/foobar/);
+      expects(() => getFruitStock('pineapples')).not.toThrowError('foobar');
+      expects(() => getFruitStock('pineapples')).not.toThrowError(new RegExp('foobar'));
+      expects(() => getFruitStock('pineapples')).not.toThrowError(new Error('foobar'));
+    });
+
+    it('expects to fail when function unexpectedly throws', () => {
+      expects(() => {
+        expects(() => {
+          getFruitStock('pineapples');
+        }).not.toThrowError();
+      }).toThrowError('Function was not expected to throw, but threw: Pineapples are not in stock');
+    });
+
+    it('expects to fail when function unexpectedly does not throw', () => {
+      expects(() => {
+        expects(() => {
+          getFruitStock('apples');
+        }).toThrowError();
+      }).toThrowError('Function was expected to throw, but did not.');
+    });
+
+    it('expects to fail when function throws a different error', () => {
+      expects(() => {
+        expects(() => {
+          getFruitStock('pineapples');
+        }).toThrowError('Pineapples have run out of stock!');
+      }).toThrowError('Pineapples are not in stock" to match "Pineapples have run out of stock!"');
+    });
+
+    it('expects a function argument', () => {
+      expects(4).not.toThrowError();
+      expects(() => {
+        expects(4).toThrowError();
+      }).toThrowError(
+        "4 is not a function. You must provide a function argument to 'toThrowError'.",
+      );
     });
   });
 
@@ -383,6 +486,125 @@ describe('expects', () => {
 
       it('expects 4 to not be odd', async () => {
         await expects(Promise.resolve(4)).resolves.not.toSatisfy(isOdd);
+      });
+    });
+
+    describe('toThrowError', () => {
+      const getFruitStock = async (type: string | null | undefined) => {
+        if (type === undefined || type === null) {
+          throw type;
+        }
+
+        if (type === 'pineapples') {
+          throw new Error('Pineapples are not in stock');
+        }
+
+        if (type === 'oranges') {
+          throw 'Oranges are not in stock';
+        }
+
+        if (type === 'apples') {
+          return 300;
+        }
+      };
+
+      it('expects function to throw undefined', async () => {
+        await expects(() => getFruitStock(undefined)).rejects.toThrowError();
+        await expects(() => getFruitStock(undefined)).rejects.toThrowError(
+          /Thrown error was undefined/,
+        );
+        await expects(() => getFruitStock(undefined)).rejects.toThrowError(
+          'Thrown error was undefined',
+        );
+        await expects(() => getFruitStock(undefined)).rejects.toThrowError(
+          /^Thrown error was undefined$/,
+        );
+        await expects(() => getFruitStock(undefined)).rejects.toThrowError(
+          new RegExp('Thrown error was undefined'),
+        );
+        await expects(() => getFruitStock(undefined)).rejects.toThrowError(
+          new Error('Thrown error was undefined'),
+        );
+      });
+
+      it('expects function to throw null', async () => {
+        await expects(() => getFruitStock(null)).rejects.toThrowError();
+        await expects(() => getFruitStock(null)).rejects.toThrowError(/Thrown error was null/);
+        await expects(() => getFruitStock(null)).rejects.toThrowError('Thrown error was null');
+        await expects(() => getFruitStock(null)).rejects.toThrowError(/^Thrown error was null$/);
+        await expects(() => getFruitStock(null)).rejects.toThrowError(
+          new RegExp('Thrown error was null'),
+        );
+        await expects(() => getFruitStock(null)).rejects.toThrowError(
+          new Error('Thrown error was null'),
+        );
+      });
+
+      it('expects function to throw an error', async () => {
+        await expects(() => getFruitStock('pineapples')).rejects.toThrowError();
+        await expects(() => getFruitStock('pineapples')).rejects.toThrowError(/stock/);
+        await expects(() => getFruitStock('pineapples')).rejects.toThrowError('stock');
+        await expects(() => getFruitStock('pineapples')).rejects.toThrowError(
+          /^Pineapples are not in stock$/,
+        );
+        await expects(() => getFruitStock('pineapples')).rejects.toThrowError(
+          new RegExp('Pineapples are not in stock'),
+        );
+        await expects(() => getFruitStock('pineapples')).rejects.toThrowError(
+          new Error('Pineapples are not in stock'),
+        );
+      });
+
+      it('expects function to throw an error', async () => {
+        await expects(getFruitStock('pineapples')).rejects.toThrowError();
+        await expects(getFruitStock('pineapples')).rejects.toThrowError(/stock/);
+        await expects(getFruitStock('pineapples')).rejects.toThrowError('stock');
+        await expects(getFruitStock('pineapples')).rejects.toThrowError(
+          /^Pineapples are not in stock$/,
+        );
+        await expects(getFruitStock('pineapples')).rejects.toThrowError(
+          new RegExp('Pineapples are not in stock'),
+        );
+        await expects(getFruitStock('pineapples')).rejects.toThrowError(
+          new Error('Pineapples are not in stock'),
+        );
+      });
+
+      it('expects function to not throw an error', async () => {
+        await expects(getFruitStock('apples')).rejects.not.toThrowError();
+        await expects(getFruitStock('pineapples')).rejects.not.toThrowError(/foobar/);
+        await expects(getFruitStock('pineapples')).rejects.not.toThrowError('foobar');
+        await expects(getFruitStock('pineapples')).rejects.not.toThrowError(new RegExp('foobar'));
+        await expects(getFruitStock('pineapples')).rejects.not.toThrowError(new Error('foobar'));
+      });
+
+      it('expects to fail when function unexpectedly throws', async () => {
+        await expects(async () => {
+          await expects(getFruitStock('pineapples')).rejects.not.toThrowError();
+        }).rejects.toThrowError(
+          'Function was not expected to throw, but threw: Pineapples are not in stock',
+        );
+      });
+
+      it('expects to fail when function unexpectedly does not throw', async () => {
+        await expects(async () => {
+          await expects(await getFruitStock('apples')).rejects.toThrowError();
+        }).rejects.toThrowError('Function was expected to throw, but did not.');
+      });
+
+      it('expects to fail when function throws a different error', async () => {
+        await expects(async () => {
+          await expects(getFruitStock('pineapples')).rejects.toThrowError(
+            'Pineapples have run out of stock!',
+          );
+        }).rejects.toThrowError(
+          'Pineapples are not in stock" to match "Pineapples have run out of stock!"',
+        );
+      });
+
+      it('expects a function argument', async () => {
+        await expects(Promise.resolve(4)).rejects.not.toThrowError();
+        await expects(Promise.reject(4)).rejects.toThrowError('4');
       });
     });
   });

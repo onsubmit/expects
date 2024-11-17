@@ -10,6 +10,10 @@ export class Expects<T> extends ExpectsAwaitable<T> {
     return new ExpectsAsync(this._value);
   }
 
+  get rejects(): ExpectsAsync<T> {
+    return new ExpectsAsync(this._value);
+  }
+
   toBe(value: T): void {
     return this._toBe(value);
   }
@@ -44,6 +48,28 @@ export class Expects<T> extends ExpectsAwaitable<T> {
 
   toSatisfy(fn: (value: T) => boolean): void {
     this._valueToBe(fn(this._value), true);
+  }
+
+  toThrowError(expected?: string | RegExp | Error): void {
+    if (typeof this._value !== 'function') {
+      if (this._inverted) {
+        return;
+      }
+
+      throw new Error(
+        `${this._value} is not a function. You must provide a function argument to 'toThrowError'.`,
+      );
+    }
+
+    try {
+      this._value();
+    } catch (e: any) {
+      return this._catchThrownError(e, expected);
+    }
+
+    if (!this._inverted) {
+      throw new Error('Function was expected to throw, but did not.');
+    }
   }
 
   protected _toBe(expected: any): void {
