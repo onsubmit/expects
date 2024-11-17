@@ -1,69 +1,52 @@
-import { Evaluator } from './evaluator.js';
+import { ExpectsAsync } from './expectsAsync.js';
+import { ExpectsAwaitable } from './expectsAwaitable.js';
 
-export class Expects<T> {
-  private _value: T;
-  private _evaluator: Evaluator;
-
+export class Expects<T> extends ExpectsAwaitable<T> {
   constructor(value: T) {
-    this._value = value;
-    this._evaluator = new Evaluator();
+    super(value);
   }
 
-  get not(): this {
-    return this._invert();
+  get resolves(): ExpectsAsync<T> {
+    return new ExpectsAsync(this._value);
   }
 
-  toBe = (value: T): void => {
-    this._toBe(value);
-  };
+  toBe(value: T): void {
+    return this._toBe(value);
+  }
 
-  toBeFalsy = (): void => {
+  toBeFalsy(): void {
     this._valueToBe(!!this._value, false);
-  };
+  }
 
-  toBeTruthy = (): void => {
+  toBeTruthy(): void {
     this._valueToBe(!!this._value, true);
-  };
+  }
 
-  toBeDefined = (): void => {
+  toBeDefined(): void {
     try {
       this.not._toBe(undefined);
     } finally {
       this._invert();
     }
-  };
+  }
 
-  toBeUndefined = (): void => {
-    this._toBe(undefined);
-  };
+  toBeUndefined(): void {
+    super.toBeUndefined();
+  }
 
-  toBeNull = (): void => {
-    this._toBe(null);
-  };
+  toBeNull(): void {
+    super.toBeNull();
+  }
 
-  toBeNaN = (): void => {
-    this._toBe(NaN);
-  };
+  toBeNaN(): void {
+    super.toBeNaN();
+  }
 
-  toSatisfy = (fn: (value: T) => boolean) => {
+  toSatisfy(fn: (value: T) => boolean): void {
     this._valueToBe(fn(this._value), true);
-  };
+  }
 
-  private _invert = (): this => {
-    this._evaluator.invert();
-    return this;
-  };
-
-  private _toBe = (expected: any): void => {
+  protected _toBe(expected: any): void {
     this._valueToBe(this._value, expected);
-  };
-
-  private _valueToBe = (actual: any, expected: any): void => {
-    if (this._evaluator.evaluate(!Object.is(actual, expected))) {
-      // TODO: improve error messages for non-primitives.
-      throw new Error(
-        `Expected:${this._evaluator.inverted ? ' <not>' : ''} ${expected}. Actual: ${actual}`,
-      );
-    }
-  };
+  }
 }

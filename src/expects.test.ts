@@ -255,4 +255,135 @@ describe('expects', () => {
       expects(4).not.toSatisfy(isOdd);
     });
   });
+
+  describe('resolves', () => {
+    describe('toBe', () => {
+      it('expects two numbers to be the same', async () => {
+        await expects(Promise.resolve(2)).resolves.toBe(2);
+      });
+
+      it('does not require the value to be a promise', async () => {
+        await expects(2).resolves.toBe(2);
+      });
+    });
+
+    describe('toBeDefined', () => {
+      it('expects a number to be defined', async () => {
+        await expects(Promise.resolve(2)).resolves.toBeDefined();
+      });
+
+      it('expects undefined to not be defined', async () => {
+        await expects(Promise.resolve(undefined)).resolves.not.toBeDefined();
+      });
+
+      it('expects inversion state is restored', async () => {
+        await expects(Promise.resolve(2)).resolves.toBeDefined();
+        await expects(Promise.resolve(2)).resolves.toBe(2);
+        await expects(Promise.resolve(2)).resolves.toBeDefined();
+        await expects(Promise.resolve(2)).resolves.not.toBe(3);
+      });
+    });
+
+    describe('toBeUndefined', () => {
+      it('expects undefined to be undefined', async () => {
+        await expects(Promise.resolve(undefined)).resolves.toBeUndefined();
+      });
+
+      it('expects a number to not be undefined', async () => {
+        await expects(Promise.resolve(2)).resolves.not.toBeUndefined();
+      });
+    });
+
+    describe('toBeTruthy', () => {
+      it('expects truthy values to be truthy', async () => {
+        await expects(Promise.resolve(true)).resolves.toBeTruthy();
+        await expects(Promise.resolve({})).resolves.toBeTruthy();
+        await expects(Promise.resolve([])).resolves.toBeTruthy();
+        await expects(Promise.resolve(1)).resolves.toBeTruthy();
+        await expects(Promise.resolve(42)).resolves.toBeTruthy();
+        await expects(Promise.resolve('0')).resolves.toBeTruthy();
+        await expects(Promise.resolve('false')).resolves.toBeTruthy();
+        await expects(Promise.resolve(new Date())).resolves.toBeTruthy();
+        await expects(Promise.resolve(-42)).resolves.toBeTruthy();
+        await expects(Promise.resolve(12n)).resolves.toBeTruthy();
+        await expects(Promise.resolve(3.14)).resolves.toBeTruthy();
+        await expects(Promise.resolve(-3.14)).resolves.toBeTruthy();
+        await expects(Promise.resolve(Infinity)).resolves.toBeTruthy();
+        await expects(Promise.resolve(-Infinity)).resolves.toBeTruthy();
+      });
+
+      it('expects falsey values to not be truthy', async () => {
+        await expects(Promise.resolve(null)).resolves.not.toBeTruthy();
+        await expects(Promise.resolve(undefined)).resolves.not.toBeTruthy();
+        await expects(Promise.resolve(false)).resolves.not.toBeTruthy();
+        await expects(Promise.resolve(NaN)).resolves.not.toBeTruthy();
+        await expects(Promise.resolve(0)).resolves.not.toBeTruthy();
+        await expects(Promise.resolve(-0)).resolves.not.toBeTruthy();
+        await expects(Promise.resolve(0n)).resolves.not.toBeTruthy();
+        await expects(Promise.resolve('')).resolves.not.toBeTruthy();
+      });
+    });
+
+    describe('toBeFalsy', () => {
+      it('expects falsey values to be falsy', async () => {
+        await expects(Promise.resolve(null)).resolves.toBeFalsy();
+        await expects(Promise.resolve(undefined)).resolves.toBeFalsy();
+        await expects(Promise.resolve(false)).resolves.toBeFalsy();
+        await expects(Promise.resolve(NaN)).resolves.toBeFalsy();
+        await expects(Promise.resolve(0)).resolves.toBeFalsy();
+        await expects(Promise.resolve(-0)).resolves.toBeFalsy();
+        await expects(Promise.resolve(0n)).resolves.toBeFalsy();
+        await expects(Promise.resolve('')).resolves.toBeFalsy();
+      });
+
+      it('expects truthy values to not be falsy', async () => {
+        await expects(Promise.resolve(true)).resolves.not.toBeFalsy();
+        await expects(Promise.resolve({})).resolves.not.toBeFalsy();
+        await expects(Promise.resolve([])).resolves.not.toBeFalsy();
+        await expects(Promise.resolve(1)).resolves.not.toBeFalsy();
+        await expects(Promise.resolve(42)).resolves.not.toBeFalsy();
+        await expects(Promise.resolve('0')).resolves.not.toBeFalsy();
+        await expects(Promise.resolve('false')).resolves.not.toBeFalsy();
+        await expects(Promise.resolve(new Date())).resolves.not.toBeFalsy();
+        await expects(Promise.resolve(-42)).resolves.not.toBeFalsy();
+        await expects(Promise.resolve(12n)).resolves.not.toBeFalsy();
+        await expects(Promise.resolve(3.14)).resolves.not.toBeFalsy();
+        await expects(Promise.resolve(-3.14)).resolves.not.toBeFalsy();
+        await expects(Promise.resolve(Infinity)).resolves.not.toBeFalsy();
+        await expects(Promise.resolve(-Infinity)).resolves.not.toBeFalsy();
+      });
+    });
+
+    describe('toBeNull', async () => {
+      it('expects null to be null', async () => {
+        await expects(Promise.resolve(null)).resolves.toBeNull();
+      });
+
+      it('expects a number to not be null', async () => {
+        await expects(Promise.resolve(2)).resolves.not.toBeNull();
+      });
+    });
+
+    describe('toBeNaN', async () => {
+      it('expects NaN to be NaN', async () => {
+        await expects(Promise.resolve(NaN)).resolves.toBeNaN();
+      });
+
+      it('expects a number to not be NaN', async () => {
+        await expects(Promise.resolve(2)).resolves.not.toBeNaN();
+      });
+    });
+
+    describe('toSatisfy', () => {
+      const isOdd = (value: number) => value % 2 !== 0;
+
+      it('expects 3 to be odd', async () => {
+        await expects(Promise.resolve(3)).resolves.toSatisfy(isOdd);
+      });
+
+      it('expects 4 to not be odd', async () => {
+        await expects(Promise.resolve(4)).resolves.not.toSatisfy(isOdd);
+      });
+    });
+  });
 });
