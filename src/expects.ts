@@ -1,5 +1,5 @@
 import { ExpectsAsync } from './expectsAsync.js';
-import { AwaitedArray, ExpectsAwaitable } from './expectsAwaitable.js';
+import { AwaitedArray, AwaitedObjLength, ExpectsAwaitable } from './expectsAwaitable.js';
 
 export class Expects<T> extends ExpectsAwaitable<T> {
   constructor(value: T) {
@@ -48,6 +48,10 @@ export class Expects<T> extends ExpectsAwaitable<T> {
 
   toContain(value: AwaitedArray<T, string>): void {
     this._toContain(this._value, value);
+  }
+
+  toHaveLength(expected: AwaitedObjLength<T>): void {
+    this._toHaveLength(this._value, expected);
   }
 
   toSatisfy(fn: (value: T) => boolean): void {

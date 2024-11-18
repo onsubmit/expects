@@ -4,6 +4,13 @@ type Awaitable<T> = T | PromiseLike<T>;
 export type AwaitedArray<T, U = never> =
   T extends Array<infer R> ? R : T extends Promise<Array<infer R>> ? R : U;
 
+type ObjWithLength = { length: number };
+export type AwaitedObjLength<T> = T extends ObjWithLength
+  ? number
+  : T extends Promise<ObjWithLength>
+    ? AwaitedObjLength<Awaited<T>>
+    : never;
+
 export abstract class ExpectsAwaitable<T> {
   protected _value: T;
   protected _evaluator: Evaluator;
@@ -28,6 +35,7 @@ export abstract class ExpectsAwaitable<T> {
   abstract toBeTruthy(): Awaitable<void>;
   abstract toBeDefined(): Awaitable<void>;
   abstract toContain(value: AwaitedArray<T, string>): Awaitable<void>;
+  abstract toHaveLength(expected: AwaitedObjLength<T>): Awaitable<void>;
   abstract toSatisfy(fn: (value: T) => boolean): Awaitable<void>;
   abstract toThrowError(thrown?: string | RegExp | Error): Awaitable<void>;
 
@@ -92,6 +100,20 @@ export abstract class ExpectsAwaitable<T> {
 
     if (!found && !this._inverted) {
       throw new Error(`${value} was expected to be contained by ${string}`);
+    }
+  }
+
+  protected _toHaveLength(value: any, expected: AwaitedObjLength<T>): void {
+    const length = value.length;
+    const string = Array.isArray(value) ? `[${value.join(', ')}]` : value.toString();
+    if (length === expected && this._inverted) {
+      throw new Error(`${string} was not expected to have a length of ${length}`);
+    }
+
+    if (length !== expected && !this._inverted) {
+      throw new Error(
+        `${string} was expected to have a length of ${expected}, but it has a length of ${length}`,
+      );
     }
   }
 

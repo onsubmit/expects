@@ -162,6 +162,36 @@ describe('expects async', () => {
     });
   });
 
+  describe('toHaveLength', () => {
+    it('expects an array to have a length', async () => {
+      await expects(Promise.resolve([1, 2, 3])).resolves.toHaveLength(3);
+      await expects(Promise.resolve([1, 2, 3])).resolves.not.toHaveLength(4);
+    });
+
+    it('expects a string to have a length', async () => {
+      await expects(Promise.resolve('andy')).resolves.toHaveLength(4);
+      await expects(Promise.resolve('andy')).resolves.not.toHaveLength(3);
+    });
+
+    it('expects an object with a length property to have a length', async () => {
+      const obj = { length: 3 };
+      await expects(Promise.resolve(obj)).resolves.toHaveLength(3);
+      await expects(Promise.resolve(obj)).resolves.not.toHaveLength(4);
+    });
+
+    it('fails if length is unexpected', async () => {
+      await expects(async () => {
+        await expects(Promise.resolve([1, 2, 3])).resolves.toHaveLength(4);
+      }).rejects.toThrowError(
+        '[1, 2, 3] was expected to have a length of 4, but it has a length of 3',
+      );
+
+      await expects(async () => {
+        await expects(Promise.resolve([1, 2, 3])).resolves.not.toHaveLength(3);
+      }).rejects.toThrowError('[1, 2, 3] was not expected to have a length of 3');
+    });
+  });
+
   describe('toSatisfy', () => {
     const isOdd = (value: number) => value % 2 !== 0;
 

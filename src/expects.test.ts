@@ -288,6 +288,34 @@ describe('expects', () => {
     });
   });
 
+  describe('toHaveLength', () => {
+    it('expects an array to have a length', () => {
+      expects([1, 2, 3]).toHaveLength(3);
+      expects([1, 2, 3]).not.toHaveLength(4);
+    });
+
+    it('expects a string to have a length', () => {
+      expects('andy').toHaveLength(4);
+      expects('andy').not.toHaveLength(3);
+    });
+
+    it('expects an object with a length property to have a length', () => {
+      const obj = { length: 3 };
+      expects(obj).toHaveLength(3);
+      expects(obj).not.toHaveLength(4);
+    });
+
+    it('fails if length is unexpected', () => {
+      expects(() => {
+        expects([1, 2, 3]).toHaveLength(4);
+      }).toThrowError('[1, 2, 3] was expected to have a length of 4, but it has a length of 3');
+
+      expects(() => {
+        expects([1, 2, 3]).not.toHaveLength(3);
+      }).toThrowError('[1, 2, 3] was not expected to have a length of 3');
+    });
+  });
+
   describe('toSatisfy', () => {
     const isOdd = (value: number) => value % 2 !== 0;
 

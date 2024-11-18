@@ -1,4 +1,4 @@
-import { AwaitedArray, ExpectsAwaitable } from './expectsAwaitable.js';
+import { AwaitedArray, AwaitedObjLength, ExpectsAwaitable } from './expectsAwaitable.js';
 
 export class ExpectsAsync<T> extends ExpectsAwaitable<T> {
   constructor(value: T) {
@@ -43,6 +43,10 @@ export class ExpectsAsync<T> extends ExpectsAwaitable<T> {
 
   async toContain(value: AwaitedArray<T, string>): Promise<void> {
     this._toContain(await this._value, value);
+  }
+
+  async toHaveLength(expected: AwaitedObjLength<T>): Promise<void> {
+    this._toHaveLength(await this._value, expected);
   }
 
   async toThrowError(expected?: string | RegExp | Error): Promise<void> {
