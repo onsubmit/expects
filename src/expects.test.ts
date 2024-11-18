@@ -244,6 +244,50 @@ describe('expects', () => {
     });
   });
 
+  describe('toContain', () => {
+    it('expects an array to contain a number', () => {
+      expects([1, 2, 3]).toContain(3);
+      expect([1, 2, 3]).toContain(3);
+      expects([1, 2, 3]).not.toContain(4);
+    });
+
+    it('expects a string to contain a substring', () => {
+      expects('andy young').toContain('andy');
+      expects('andy young').toContain('young');
+      expects('andy young').not.toContain('joe');
+    });
+
+    it('expects to fail when an array does not contain a number', () => {
+      expects(() => {
+        expects([1, 2, 3]).toContain(4);
+      }).toThrowError('4 was expected to be contained by [1, 2, 3]');
+    });
+
+    it('expects to fail when a string does not contain a substring', () => {
+      expects(() => {
+        expects('andy').toContain('joe');
+      }).toThrowError('joe was expected to be contained by andy');
+    });
+
+    it('expects to fail when an array contains an unexpected number', () => {
+      expects(() => {
+        expects([1, 2, 3]).not.toContain(3);
+      }).toThrowError('3 was not expected to be contained by [1, 2, 3]');
+    });
+
+    it('expects to fail when a string contains an unexpected substring', () => {
+      expects(() => {
+        expects('andy').not.toContain('a');
+      }).toThrowError('a was not expected to be contained by andy');
+    });
+
+    it('expects to fail when invalid types are provided', () => {
+      expects(() => {
+        expects(2).toContain('4');
+      }).toThrowError('Both values must be strings or the actual value must be an array.');
+    });
+  });
+
   describe('toSatisfy', () => {
     const isOdd = (value: number) => value % 2 !== 0;
 
@@ -474,6 +518,52 @@ describe('expects', () => {
 
       it('expects a number to not be NaN', async () => {
         await expects(Promise.resolve(2)).resolves.not.toBeNaN();
+      });
+    });
+
+    describe('toContain', () => {
+      it('expects an array to contain a number', async () => {
+        await expects(Promise.resolve([1, 2, 3])).resolves.toContain(3);
+        await expect(Promise.resolve([1, 2, 3])).resolves.toContain(3);
+        await expects(Promise.resolve([1, 2, 3])).resolves.not.toContain(4);
+      });
+
+      it('expects a string to contain a substring', async () => {
+        await expects(Promise.resolve('andy young')).resolves.toContain('andy');
+        await expects(Promise.resolve('andy young')).resolves.toContain('young');
+        await expects(Promise.resolve('andy young')).resolves.not.toContain('joe');
+      });
+
+      it('expects to fail when an array does not contain a number', async () => {
+        await expects(async () => {
+          await expects(Promise.resolve([1, 2, 3])).resolves.toContain(4);
+        }).resolves.toThrowError('4 was expected to be contained by [1, 2, 3]');
+      });
+
+      it('expects to fail when a string does not contain a substring', async () => {
+        await expects(async () => {
+          await expects(Promise.resolve('andy')).resolves.toContain('joe');
+        }).resolves.toThrowError('joe was expected to be contained by andy');
+      });
+
+      it('expects to fail when an array contains an unexpected number', async () => {
+        await expects(async () => {
+          await expects(Promise.resolve([1, 2, 3])).resolves.not.toContain(3);
+        }).resolves.toThrowError('3 was not expected to be contained by [1, 2, 3]');
+      });
+
+      it('expects to fail when a string contains an unexpected substring', async () => {
+        await expects(async () => {
+          await expects(Promise.resolve('andy')).resolves.not.toContain('a');
+        }).resolves.toThrowError('a was not expected to be contained by andy');
+      });
+
+      it('expects to fail when invalid types are provided', async () => {
+        await expects(async () => {
+          await expects(Promise.resolve(2)).resolves.toContain('4');
+        }).resolves.toThrowError(
+          'Both values must be strings or the actual value must be an array.',
+        );
       });
     });
 

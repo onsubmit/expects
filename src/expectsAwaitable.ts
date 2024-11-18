@@ -1,6 +1,8 @@
 import { Evaluator } from './evaluator.js';
 
 type Awaitable<T> = T | PromiseLike<T>;
+export type AwaitedArray<T, U = never> =
+  T extends Array<infer R> ? R : T extends Promise<Array<infer R>> ? R : U;
 
 export abstract class ExpectsAwaitable<T> {
   protected _value: T;
@@ -25,6 +27,7 @@ export abstract class ExpectsAwaitable<T> {
   abstract toBeFalsy(): Awaitable<void>;
   abstract toBeTruthy(): Awaitable<void>;
   abstract toBeDefined(): Awaitable<void>;
+  abstract toContain(value: AwaitedArray<T, string>): Awaitable<void>;
   abstract toSatisfy(fn: (value: T) => boolean): Awaitable<void>;
   abstract toThrowError(thrown?: string | RegExp | Error): Awaitable<void>;
 
@@ -57,6 +60,38 @@ export abstract class ExpectsAwaitable<T> {
       } else {
         this._stringToMatch(message, expected);
       }
+    }
+  }
+
+  protected _toContain(actual: T, value: AwaitedArray<T, string>): void {
+    const categorize = () => {
+      if (Array.isArray(actual)) {
+        return {
+          found: actual.includes(value),
+          string: `[${actual.join(', ')}]`,
+        };
+      } else if (typeof actual === 'string' && typeof value === 'string') {
+        return {
+          found: actual.includes(value),
+          string: actual,
+        };
+      }
+
+      return 'invalid-types';
+    };
+
+    const category = categorize();
+    if (category === 'invalid-types') {
+      throw new Error('Both values must be strings or the actual value must be an array.');
+    }
+
+    const { found, string } = category;
+    if (found && this._inverted) {
+      throw new Error(`${value} was not expected to be contained by ${string}`);
+    }
+
+    if (!found && !this._inverted) {
+      throw new Error(`${value} was expected to be contained by ${string}`);
     }
   }
 

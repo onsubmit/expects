@@ -1,5 +1,5 @@
 import { ExpectsAsync } from './expectsAsync.js';
-import { ExpectsAwaitable } from './expectsAwaitable.js';
+import { AwaitedArray, ExpectsAwaitable } from './expectsAwaitable.js';
 
 export class Expects<T> extends ExpectsAwaitable<T> {
   constructor(value: T) {
@@ -44,6 +44,10 @@ export class Expects<T> extends ExpectsAwaitable<T> {
 
   toBeNaN(): void {
     super.toBeNaN();
+  }
+
+  toContain(value: AwaitedArray<T, string>): void {
+    this._toContain(this._value, value);
   }
 
   toSatisfy(fn: (value: T) => boolean): void {
